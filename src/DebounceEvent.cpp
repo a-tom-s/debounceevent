@@ -16,6 +16,8 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+  2018-02-15  modified by Thomas Stärk in loop()
+
 */
 
 #include <Arduino.h>
@@ -72,10 +74,14 @@ unsigned char DebounceEvent::loop() {
             _status = !_status;
 
             if (_mode == BUTTON_SWITCH) {
-
-                event = EVENT_CHANGED;
-
-            } else {
+                // Stärk: modified to have different events for pressed / released switch button
+                _event_count = 0;
+                if (_status != _defaultStatus)
+                    event = EVENT_PRESSED;
+                else
+                    event = EVENT_RELEASED;
+            }
+            else {
 
                 // released
                 if (_status == _defaultStatus) {
